@@ -8,7 +8,7 @@ Flags:
   * t, --tree - prints full file tree instead of folders that will be moved to trash bin
 
 ## Dependencies
-* Python3 (python2 should work also)
+* Python3 (python2 should also work)
 * [Send2Trash](https://github.com/hsoft/send2trash)
 
 #References / Thanks
