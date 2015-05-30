@@ -1,21 +1,14 @@
 import argparse
 import os
 import tree
+from send2trash import send2trash
 
 def main():
     MUSIC_FORMATS = ['mp3', 'flac', 'waw', 'm4a']
-    
-    desc = "Script that scans folders and remove folders that do not contain music.\nSupported music formats:\n"
-    
-    for sformat in MUSIC_FORMATS:
-        desc += "  " + sformat + "\n"
-    
-    parser = argparse.ArgumentParser(description=desc)
-    parser.add_argument('path', help='Path to music library')
+    yes = set(['yes','y', 'ye', ''])
+    no = set(['no','n'])
 
-    parser.add_argument('-t', '--tree', help='Prints file tree that will be deleted', action="store_true")
-
-    args = parser.parse_args()
+    args = unparse_arguments(MUSIC_FORMATS)
 
     empty_dirs = find_folders_not_containing(args.path, MUSIC_FORMATS)
     for folder in empty_dirs:
@@ -23,6 +16,22 @@ def main():
             tree.tree(folder, '  ', True)
         else:
             print(folder)
+    
+    if empty_dirs:
+        print("Do you want to delete listed directories? [yes/no]")
+        choice = input().lower()
+
+        if (choice in yes):
+            print("Deleting dirs")
+            delete_dirs(empty_dirs)
+        else:
+            print("You have canceled this action")
+    else:
+        print("Your music library is already clean")
+
+def delete_dirs(dirs):
+    for folder in dirs:
+        send2trash(folder)
 
 def find_folders_not_containing(folder, formats):
     os.chdir(folder)
@@ -57,6 +66,17 @@ def search_files(files, formats):
                 return True;
 
     return False;
+
+def unparse_arguments(formats):
+    desc = "Script that scans folders and remove folders that do not contain music.\nSupported music formats:\n"
+
+    for sformat in formats:
+        desc += "  " + sformat + "\n"
+
+    parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument('path', help='Path to music library')
+    parser.add_argument('-t', '--tree', help='Prints file tree that will be deleted', action="store_true")
+    return parser.parse_args()
 
 if __name__ == '__main__':
     main()
