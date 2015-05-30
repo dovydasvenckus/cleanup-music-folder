@@ -36,13 +36,32 @@ def delete_dirs(dirs):
 def find_folders_not_containing(folder, formats):
     os.chdir(folder)
     result = []
+    ignore = []
     for root, dirs, files in os.walk('.'):
-        while len(dirs) > 0:
-            current = dirs.pop()
-            empty = is_empty_file_tree(current, formats)
-            if empty:
-                result.append(current)
+        if starts_with_in(root, ignore):
+            continue
+
+        empty = is_empty_file_tree(root, formats)
+        if empty:
+            result.append(root)
+            ignore = ignore + merge_root_path(root, dirs)
     return result
+
+def merge_root_path(root, dirs):
+    result = []
+
+    for folder in dirs:
+        result.append(os.path.join(root, folder))
+    
+    return result
+
+
+def starts_with_in(path, dirs):
+    for folder in dirs:
+        if path.startswith(folder):
+            return True
+
+    return False
 
 def is_empty_file_tree(directory, formats):
     result = []
