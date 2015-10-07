@@ -16,7 +16,7 @@ def main():
             tree.tree(folder, '  ', True)
         else:
             print(folder)
-    
+
     if empty_dirs:
         print("Do you want to delete listed directories? [yes/no]")
         choice = input().lower()
@@ -52,7 +52,7 @@ def merge_root_path(root, dirs):
 
     for folder in dirs:
         result.append(os.path.join(root, folder))
-    
+
     return result
 
 
@@ -75,13 +75,13 @@ def is_dirs_empty(result_list):
     for directory in result_list:
         if directory == False:
             return False
-    
+
     return True
 
 def search_files(files, formats):
     for sfile in files:
         for sformat in formats:
-            if sfile.endswith(sformat):
+            if sfile.lower().endswith(sformat.lower()):
                 return True;
 
     return False;
